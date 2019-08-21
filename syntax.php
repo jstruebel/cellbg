@@ -50,7 +50,7 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
     function connectTo($mode) {
       if ($mode == "table")
       {
-        $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z]*:', $mode, 'plugin_cellbg');
+        $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z(),.%]*:', $mode, 'plugin_cellbg');
       }
     }
     function postConnect() {
@@ -115,7 +115,8 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
         $pattern = "/
             (^[a-zA-Z]+$)|                                #colorname - not verified
             (^\#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$)|        #colorvalue
-            (^rgb\(([0-9]{1,3}%?,){2}[0-9]{1,3}%?\)$)     #rgb triplet
+            (^rgba?\(([0-9]{1,3}%?,){2}[0-9]{1,3}%?(,[0-9.]+%?)?\)$)|    #rgb[a] triplet
+            (^hsla?\([0-9]{1,3}(,[0-9]{1,3}%)(,[0-9.]+%?)?\)$)           #hsl[a] triplet
             /x";
 
         return (preg_match($pattern, $c));
