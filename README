@@ -12,8 +12,8 @@ in the first cell in that row.
 Any valid HTML color name, hex code, rgb, rgba, hsl, and hsla
 color syntax is accepted.
 
-The table background is set using CSSthe  background-color propery
-in a style attribute of the <tr>, <th>, or <td> element.
+The table background is set using CSS by setting the background-color
+propery in a style attribute of the <tr>, <th>, or <td> element.
 
 Examples
 
