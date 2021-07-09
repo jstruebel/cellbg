@@ -1,2 +1,26 @@
 This is a plugin for dokuwiki.
 It will enable syntax to set cell background in tables.
+
+Syntax and usage
+
+A background color is introduced by a '@' and ended by a ':'.
+The background color must be at the start of the data in a cell.
+If the first character after the '@' is '-' then the background
+color is applied to the entire row. This will only work if it is
+in the first cell in that row.
+
+Any valid HTML color name, hex code, rgb, rgba, hsl, and hsla
+color syntax is accepted.
+
+The table background is set using CSSthe  background-color propery
+in a style attribute of the <tr>, <th>, or <td> element.
+
+Examples
+
+^  Header 1                   ^  @rgba(0,100%,100%,80%):Header 2  ^  Header 3        ^
+|  @lightgreen:**Span**                                          ||                  |
+|  @#6495ed:Ligne 1           |  Oui                              |  Oui, à valider  |
+|  @-rgb(222,184,135):Ligne 2 |  Oui                              |  @orange: Oui    |
+|  @:Ligne 3                  |  @hsl(300, 76%, 72%):Oui          | @red:Non         |
+
+
