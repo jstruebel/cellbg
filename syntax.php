@@ -50,7 +50,7 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
     function connectTo($mode) {
       if ($mode == "table")
       {
-        $this->Lexer->addSpecialPattern('^@#?[0-9a-zA-Z(),.%]*:', $mode, 'plugin_cellbg');
+        $this->Lexer->addSpecialPattern('^@-?#?[0-9a-zA-Z(),.%]*:', $mode, 'plugin_cellbg');
       }
     }
     function postConnect() {
@@ -70,17 +70,17 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
           case DOKU_LEXER_EXIT :
             break;
           case DOKU_LEXER_SPECIAL :
-            preg_match("/@([^:]*)/", $match, $color); // get the color
-            if ( $this->_isValid($color[1]) ) return array($state, $color[1], $match);
+            preg_match("/@(-?)([^:]*)/", $match, $color); // get the color
+            if ( $this->_isValid($color[2]) ) return array($state, $color[2], $color[1], $match);
             break;
         }
-        return array($state, "yellow", $match);
+        return array($state, "transparent", "", $match);
     }
 
     // Create output
     function render($mode, Doku_Renderer $renderer, $data) {
         if($mode == 'xhtml'){
-          list($state, $color, $text) = $data;
+          list($state, $color, $row, $text) = $data;
           switch ($state) {
             case DOKU_LEXER_ENTER :
               break;
@@ -92,10 +92,18 @@ class syntax_plugin_cellbg extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_EXIT :
               break;
             case DOKU_LEXER_SPECIAL :
-              if (preg_match('/(<t[hd][^<>]*)>[[:space:]]*$/', $renderer->doc) != 0) {
-                $renderer->doc = preg_replace('/(<t[hd][^>]*)>[[:space:]]*$/', '\1 style="background-color:'.$color.'">', $renderer->doc);
+              if ($row == "-") {
+                if (preg_match('/(<tr[^<>]*)>([[:space:]]*<t[hd][^<>]*>[[:space:]]*)$/', $renderer->doc) != 0) {
+                  $renderer->doc = preg_replace('/(<tr[^>]*)>([[:space:]]*<t[hd][^>]*>[[:space:]]*)$/', '\1 style="background-color:'.$color.'">\2', $renderer->doc);
+                } else {
+                  $renderer->doc .= $text;
+                }
               } else {
-                $renderer->doc .= $text;
+                if (preg_match('/(<t[hd][^<>]*)>[[:space:]]*$/', $renderer->doc) != 0) {
+                  $renderer->doc = preg_replace('/(<t[hd][^>]*)>[[:space:]]*$/', '\1 style="background-color:'.$color.'"> ', $renderer->doc);
+                } else {
+                  $renderer->doc .= $text;
+                }
               }
               break;
           }
